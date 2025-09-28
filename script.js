@@ -808,6 +808,26 @@ function showSuccessModal(role) {
     }
 }
 
+function redirectAfterLogin() {
+    // Get saved redirect URL or default to appropriate dashboard
+    const savedRedirect = sessionStorage.getItem('redirectAfterLogin');
+    
+    if (auth.currentUser) {
+        let redirectUrl;
+        
+        if (savedRedirect && savedRedirect !== 'login.html') {
+            // Use saved redirect if available and not login page
+            redirectUrl = savedRedirect;
+        } else {
+            // Default to role-based redirect
+            redirectUrl = auth.currentUser.role === 'admin' ? 'index.html' : 'patient-portal.html';
+        }
+        
+        sessionStorage.removeItem('redirectAfterLogin');
+        window.location.href = redirectUrl;
+    }
+}
+
 function continueToDashboard() {
     const modal = document.getElementById('successModal');
     if (modal) {
