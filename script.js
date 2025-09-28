@@ -639,9 +639,225 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 });
 
-// Placeholder initialization functions for compatibility
+// Login Page Functions
+let selectedRole = null;
+
+function selectRole(role) {
+    selectedRole = role;
+    
+    // Remove active from all cards
+    document.querySelectorAll('.role-card').forEach(card => {
+        card.classList.remove('selected');
+    });
+    
+    // Add active to selected card
+    const selectedCard = document.querySelector(`.role-card[onclick="selectRole('${role}')"]`);
+    if (selectedCard) {
+        selectedCard.classList.add('selected');
+    }
+    
+    // Show login form
+    setTimeout(() => {
+        showLoginForm(role);
+    }, 300);
+}
+
+function showLoginForm(role) {
+    const roleStep = document.getElementById('roleStep');
+    const loginStep = document.getElementById('loginStep');
+    const loginTitle = document.getElementById('loginTitle');
+    const loginSubtitle = document.getElementById('loginSubtitle');
+    
+    if (roleStep && loginStep) {
+        roleStep.classList.remove('active');
+        loginStep.classList.add('active');
+        
+        if (role === 'admin') {
+            loginTitle.textContent = 'Administrator Login';
+            loginSubtitle.textContent = 'Access hospital management system';
+        } else {
+            loginTitle.textContent = 'Patient Login';
+            loginSubtitle.textContent = 'Access your patient portal';
+        }
+    }
+}
+
+function goBackToRoleSelection() {
+    const roleStep = document.getElementById('roleStep');
+    const loginStep = document.getElementById('loginStep');
+    
+    if (roleStep && loginStep) {
+        loginStep.classList.remove('active');
+        roleStep.classList.add('active');
+    }
+    
+    selectedRole = null;
+}
+
+function showRegistration() {
+    const modal = document.getElementById('registrationModal');
+    if (modal) {
+        modal.style.display = 'flex';
+    }
+}
+
+function closeRegistrationModal() {
+    const modal = document.getElementById('registrationModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+    
+    // Reset form
+    const form = document.getElementById('registrationForm');
+    if (form) {
+        form.reset();
+    }
+}
+
+async function quickLogin(username, password) {
+    // Set appropriate role based on username
+    if (username === 'admin') {
+        selectRole('admin');
+    } else {
+        selectRole('patient');
+    }
+    
+    // Fill form and submit
+    setTimeout(async () => {
+        const usernameField = document.getElementById('username');
+        const passwordField = document.getElementById('password');
+        
+        if (usernameField && passwordField) {
+            usernameField.value = username;
+            passwordField.value = password;
+            
+            // Trigger login
+            await handleLogin({ preventDefault: () => {} });
+        }
+    }, 500);
+}
+
+async function handleLogin(event) {
+    event.preventDefault();
+    
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const loginBtn = document.getElementById('loginBtn');
+    const loginBtnText = document.getElementById('loginBtnText');
+    
+    if (!username || !password) {
+        utils.showToast('Please enter both username and password', 'error');
+        return;
+    }
+    
+    if (!selectedRole) {
+        utils.showToast('Please select a role first', 'error');
+        return;
+    }
+    
+    try {
+        // Show loading state
+        if (loginBtn && loginBtnText) {
+            loginBtn.classList.add('loading');
+            loginBtnText.textContent = 'Signing In...';
+        }
+        
+        const response = await api.login(username, password);
+        
+        if (response.success) {
+            // Verify role matches selection
+            if (response.user.role !== selectedRole) {
+                throw new Error(`Account role (${response.user.role}) doesn't match selected role (${selectedRole})`);
+            }
+            
+            // Store user session
+            auth.currentUser = response.user;
+            
+            // Show success
+            utils.showToast(`Welcome ${response.user.role === 'admin' ? 'Administrator' : response.user.username}!`, 'success');
+            
+            // Show success modal
+            showSuccessModal(response.user.role);
+            
+            // Redirect after delay
+            setTimeout(() => {
+                redirectAfterLogin();
+            }, 2000);
+        }
+    } catch (error) {
+        utils.showToast(error.message || 'Login failed', 'error');
+        console.error('Login error:', error);
+    } finally {
+        // Reset button state
+        if (loginBtn && loginBtnText) {
+            loginBtn.classList.remove('loading');
+            loginBtnText.textContent = 'Sign In';
+        }
+    }
+}
+
+function showSuccessModal(role) {
+    const modal = document.getElementById('successModal');
+    const title = document.getElementById('successTitle');
+    const message = document.getElementById('successMessage');
+    
+    if (modal && title && message) {
+        title.textContent = role === 'admin' ? 'Admin Login Successful!' : 'Patient Login Successful!';
+        message.textContent = role === 'admin' ? 'Redirecting to admin dashboard...' : 'Redirecting to patient portal...';
+        modal.style.display = 'flex';
+    }
+}
+
+function continueToDashboard() {
+    const modal = document.getElementById('successModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+    redirectAfterLogin();
+}
+
 function initLoginPage() {
     console.log('Login page initialized');
+    
+    // Set up password toggle
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    
+    if (togglePassword && passwordInput) {
+        togglePassword.addEventListener('click', () => {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            const icon = togglePassword.querySelector('i');
+            if (icon) {
+                icon.classList.toggle('fa-eye');
+                icon.classList.toggle('fa-eye-slash');
+            }
+        });
+    }
+    
+    // Set up login form
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', handleLogin);
+    }
+    
+    // Set up registration form
+    const registrationForm = document.getElementById('registrationForm');
+    if (registrationForm) {
+        registrationForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            // Registration functionality can be added here
+            utils.showToast('Registration functionality coming soon', 'info');
+        });
+    }
+    
+    // Close modals when clicking outside
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('modal')) {
+            e.target.style.display = 'none';
+        }
+    });
 }
 
 function initPatientPortal() {
@@ -679,3 +895,11 @@ window.auth = auth;
 window.utils = utils;
 window.api = api;
 window.hospitalData = hospitalData;
+
+// Export login functions for HTML onclick handlers
+window.selectRole = selectRole;
+window.goBackToRoleSelection = goBackToRoleSelection;
+window.showRegistration = showRegistration;
+window.closeRegistrationModal = closeRegistrationModal;
+window.quickLogin = quickLogin;
+window.continueToDashboard = continueToDashboard;
