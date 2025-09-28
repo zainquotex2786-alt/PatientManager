@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Search - Pakenham Hospital</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="search-page admin-dashboard">
+    <!-- Navigation -->
+    <nav class="main-nav admin-nav">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-hospital-alt"></i>
+                <span>Pakenham Hospital</span>
+                <span class="nav-badge">Admin</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="enrollment.html" class="nav-link"><i class="fas fa-user-plus"></i> Enrollment</a></li>
+                <li><a href="appointments-admin.html" class="nav-link"><i class="fas fa-calendar-check"></i> Appointments</a></li>
+                <li><a href="tracking.html" class="nav-link"><i class="fas fa-map-marker-alt"></i> Tracking</a></li>
+                <li><a href="search.html" class="nav-link active"><i class="fas fa-search"></i> Search</a></li>
+            </ul>
+            <div class="nav-actions">
+                <div class="admin-user-menu">
+                    <div class="user-info">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Admin User</span>
+                        <div class="user-dropdown">
+                            <a href="#profile"><i class="fas fa-user-cog"></i> Profile Settings</a>
+                            <a href="#system"><i class="fas fa-cog"></i> System Settings</a>
+                            <a href="login.html" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="notification-bell">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-count">2</span>
+                </div>
+            </div>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="search-main">
+        <div class="container">
+            <!-- Header -->
+            <div class="page-header">
+                <h1><i class="fas fa-search"></i> Patient Search</h1>
+                <p>Find patient records quickly and efficiently</p>
+            </div>
+
+            <!-- Search Section -->
+            <section class="search-section">
+                <div class="search-card card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-search"></i> Search Patients</h2>
+                        <p>Search by name, patient code, or email address</p>
+                    </div>
+                    <div class="card-body">
+                        <div class="search-form">
+                            <div class="search-input-group">
+                                <div class="search-box">
+                                    <i class="fas fa-search"></i>
+                                    <input 
+                                        type="text" 
+                                        id="searchInput" 
+                                        placeholder="Enter patient name, code (e.g. P0001), or email address..."
+                                        autocomplete="off"
+                                    >
+                                    <button type="button" id="clearSearch" class="clear-btn" style="display: none;">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                                <button type="button" class="btn btn-primary" id="searchBtn">
+                                    <i class="fas fa-search"></i> Search
+                                </button>
+                            </div>
+                            
+                            <div class="search-filters">
+                                <div class="filter-group">
+                                    <label for="genderFilter">Gender</label>
+                                    <select id="genderFilter">
+                                        <option value="">All Genders</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="filter-group">
+                                    <label for="dateFromFilter">From Date</label>
+                                    <input type="date" id="dateFromFilter">
+                                </div>
+                                <div class="filter-group">
+                                    <label for="dateToFilter">To Date</label>
+                                    <input type="date" id="dateToFilter">
+                                </div>
+                                <div class="filter-actions">
+                                    <button type="button" class="btn btn-outline" id="clearFilters">
+                                        <i class="fas fa-times"></i> Clear Filters
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Search Section -->
+            <section class="quick-search-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-bolt"></i> Quick Search</h2>
+                    <p>Common search patterns</p>
+                </div>
+                <div class="quick-search-grid">
+                    <button class="quick-search-btn" onclick="quickSearch('today')">
+                        <i class="fas fa-calendar-day"></i>
+                        <span>Today's Patients</span>
+                    </button>
+                    <button class="quick-search-btn" onclick="quickSearch('recent')">
+                        <i class="fas fa-clock"></i>
+                        <span>Recent Registrations</span>
+                    </button>
+                    <button class="quick-search-btn" onclick="quickSearch('emergency')">
+                        <i class="fas fa-ambulance"></i>
+                        <span>Emergency Cases</span>
+                    </button>
+                    <button class="quick-search-btn" onclick="quickSearch('all')">
+                        <i class="fas fa-list"></i>
+                        <span>All Patients</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Search Results Section -->
+            <section class="results-section" id="resultsSection" style="display: none;">
+                <div class="results-header">
+                    <h2><i class="fas fa-list-alt"></i> Search Results</h2>
+                    <div class="results-meta">
+                        <span id="resultsCount">0 patients found</span>
+                        <div class="results-actions">
+                            <button class="btn btn-outline" onclick="exportResults()">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="results-table-container">
+                    <table class="results-table" id="resultsTable">
+                        <thead>
+                            <tr>
+                                <th>Patient Code</th>
+                                <th>Name</th>
+                                <th>Date of Birth</th>
+                                <th>Gender</th>
+                                <th>Contact</th>
+                                <th>Email</th>
+                                <th>Registration Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsTableBody">
+                            <!-- Results will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- No Results Message -->
+                <div class="no-results" id="noResults" style="display: none;">
+                    <div class="no-results-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3>No Patients Found</h3>
+                    <p>Try adjusting your search criteria or use different keywords.</p>
+                    <div class="no-results-suggestions">
+                        <h4>Search Tips:</h4>
+                        <ul>
+                            <li>Check spelling of patient names</li>
+                            <li>Use partial matches (e.g., "John" instead of "Johnathan")</li>
+                            <li>Search by patient code (e.g., P0001)</li>
+                            <li>Try searching by email address</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Loading State -->
+            <div class="loading-state" id="loadingState" style="display: none;">
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                </div>
+                <p>Searching patients...</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Patient Details Modal -->
+    <div id="patientModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-user"></i> Patient Details</h3>
+                <button class="modal-close" onclick="closePatientModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="patientModalBody">
+                <!-- Patient details will be populated here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closePatientModal()">Close</button>
+                <button class="btn btn-primary" onclick="editPatient()">Edit Patient</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
