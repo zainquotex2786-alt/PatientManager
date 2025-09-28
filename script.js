@@ -218,15 +218,11 @@ const auth = {
     currentUser: null,
 
     async init() {
-        console.log('🔍 auth.init() called');
         try {
             const response = await api.getSession();
-            console.log('🔍 Session response:', response);
             if (response.authenticated) {
-                console.log('✅ Setting currentUser:', response.user);
                 this.currentUser = response.user;
             } else {
-                console.log('❌ Clearing currentUser (not authenticated)');
                 // Clear user if session is not authenticated
                 this.currentUser = null;
             }
@@ -234,7 +230,6 @@ const auth = {
             console.error('Session check failed:', error);
             this.currentUser = null;
         }
-        console.log('🔍 auth.init() completed, currentUser:', this.currentUser);
     },
 
     async login(username, password, role = null) {
