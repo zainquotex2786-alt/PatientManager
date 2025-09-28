@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Tracking - Pakenham Hospital</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="tracking-page">
+    <!-- Navigation -->
+    <nav class="main-nav admin-nav">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-hospital-alt"></i>
+                <span>Pakenham Hospital</span>
+                <span class="nav-badge">Admin</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="enrollment.html" class="nav-link"><i class="fas fa-user-plus"></i> Enrollment</a></li>
+                <li><a href="appointments-admin.html" class="nav-link"><i class="fas fa-calendar-check"></i> Appointments</a></li>
+                <li><a href="tracking.html" class="nav-link active"><i class="fas fa-map-marker-alt"></i> Tracking</a></li>
+                <li><a href="search.html" class="nav-link"><i class="fas fa-search"></i> Search</a></li>
+            </ul>
+            <div class="nav-actions">
+                <div class="admin-user-menu">
+                    <div class="user-info">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Admin User</span>
+                        <div class="user-dropdown">
+                            <a href="#profile"><i class="fas fa-user-cog"></i> Profile Settings</a>
+                            <a href="#system"><i class="fas fa-cog"></i> System Settings</a>
+                            <a href="login.html" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="notification-bell">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-count">5</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="tracking-main">
+        <div class="container">
+            <!-- Header -->
+            <div class="page-header">
+                <h1><i class="fas fa-map-marker-alt"></i> Patient Tracking</h1>
+                <p>Real-time monitoring of patient locations and status</p>
+            </div>
+
+            <!-- Tracking Overview -->
+            <div class="tracking-overview">
+                <div class="overview-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-injured"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalPatients">42</h3>
+                            <p>Total Patients in Hospital</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-procedures"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="inTreatment">18</h3>
+                            <p>In Treatment</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="waiting">12</h3>
+                            <p>Waiting</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-bed"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="admitted">8</h3>
+                            <p>Admitted</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="overview-actions">
+                    <button class="btn btn-primary" onclick="showQuickCheckin()">
+                        <i class="fas fa-user-plus"></i> Quick Check-in
+                    </button>
+                    <button class="btn btn-outline" onclick="refreshTracking()">
+                        <i class="fas fa-sync"></i> Refresh
+                    </button>
+                    <button class="btn btn-outline" onclick="exportTrackingData()">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                </div>
+            </div>
+
+            <!-- Search and Filters -->
+            <div class="tracking-controls">
+                <div class="search-section">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="patientSearch" placeholder="Search patients by name or ID...">
+                        <button class="btn btn-primary" onclick="searchPatient()">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <div class="filter-group">
+                        <label>Status</label>
+                        <select id="statusFilter" onchange="applyFilters()">
+                            <option value="all">All Status</option>
+                            <option value="checked-in">Checked In</option>
+                            <option value="waiting">Waiting</option>
+                            <option value="in-treatment">In Treatment</option>
+                            <option value="admitted">Admitted</option>
+                            <option value="discharged">Discharged</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Department</label>
+                        <select id="departmentFilter" onchange="applyFilters()">
+                            <option value="all">All Departments</option>
+                            <option value="emergency">Emergency</option>
+                            <option value="cardiology">Cardiology</option>
+                            <option value="orthopedics">Orthopedics</option>
+                            <option value="pediatrics">Pediatrics</option>
+                            <option value="surgery">Surgery</option>
+                            <option value="radiology">Radiology</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Time Range</label>
+                        <select id="timeFilter" onchange="applyFilters()">
+                            <option value="today">Today</option>
+                            <option value="last-24h">Last 24 Hours</option>
+                            <option value="last-week">Last Week</option>
+                            <option value="custom">Custom Range</option>
+                        </select>
+                    </div>
+                    <div class="filter-actions">
+                        <button class="btn btn-outline" onclick="clearFilters()">
+                            <i class="fas fa-times"></i> Clear
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Tracking Content -->
+            <div class="tracking-content">
+                <!-- Hospital Map View -->
+                <div class="tracking-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-map"></i> Hospital Map</h2>
+                        <p>Real-time patient locations</p>
+                    </div>
+                    <div class="hospital-map">
+                        <div class="map-container">
+                            <div class="map-department" data-department="emergency">
+                                <h4>Emergency Department</h4>
+                                <div class="map-patients" id="emergencyPatients">
+                                    <!-- Emergency department patients -->
+                                </div>
+                            </div>
+                            <div class="map-department" data-department="cardiology">
+                                <h4>Cardiology</h4>
+                                <div class="map-patients" id="cardiologyPatients">
+                                    <!-- Cardiology patients -->
+                                </div>
+                            </div>
+                            <div class="map-department" data-department="orthopedics">
+                                <h4>Orthopedics</h4>
+                                <div class="map-patients" id="orthopedicsPatients">
+                                    <!-- Orthopedics patients -->
+                                </div>
+                            </div>
+                            <div class="map-department" data-department="pediatrics">
+                                <h4>Pediatrics</h4>
+                                <div class="map-patients" id="pediatricsPatients">
+                                    <!-- Pediatrics patients -->
+                                </div>
+                            </div>
+                            <div class="map-department" data-department="surgery">
+                                <h4>Surgery</h4>
+                                <div class="map-patients" id="surgeryPatients">
+                                    <!-- Surgery patients -->
+                                </div>
+                            </div>
+                            <div class="map-department" data-department="radiology">
+                                <h4>Radiology</h4>
+                                <div class="map-patients" id="radiologyPatients">
+                                    <!-- Radiology patients -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Patient List -->
+                <div class="tracking-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-list"></i> Current Patients</h2>
+                        <div class="header-actions">
+                            <div class="view-toggle">
+                                <button class="view-btn active" data-view="list">
+                                    <i class="fas fa-list"></i> List
+                                </button>
+                                <button class="view-btn" data-view="grid">
+                                    <i class="fas fa-th"></i> Grid
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="patients-list" id="patientsList">
+                        <!-- Patients will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="tracking-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-bolt"></i> Quick Actions</h2>
+                    </div>
+                    <div class="quick-actions-grid">
+                        <button class="action-card" onclick="showQuickCheckin()">
+                            <div class="action-icon">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
+                            <h3>Quick Check-in</h3>
+                            <p>Register a new patient arrival</p>
+                        </button>
+                        <button class="action-card" onclick="showBulkUpdate()">
+                            <div class="action-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <h3>Bulk Update</h3>
+                            <p>Update multiple patients at once</p>
+                        </button>
+                        <button class="action-card" onclick="showLocationReport()">
+                            <div class="action-icon">
+                                <i class="fas fa-map-marked-alt"></i>
+                            </div>
+                            <h3>Location Report</h3>
+                            <p>Generate patient location report</p>
+                        </button>
+                        <button class="action-card" onclick="showWaitTimeAnalysis()">
+                            <div class="action-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <h3>Wait Times</h3>
+                            <p>View wait time analytics</p>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="tracking-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-history"></i> Recent Activity</h2>
+                    <button class="btn btn-sm" onclick="showActivityLog()">
+                        <i class="fas fa-external-link-alt"></i> View Full Log
+                    </button>
+                </div>
+                <div class="activity-timeline" id="recentActivity">
+                    <!-- Recent activity will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modals -->
+    <!-- Quick Check-in Modal -->
+    <div class="modal" id="quickCheckinModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-user-plus"></i> Quick Patient Check-in</h3>
+                <button class="modal-close" onclick="closeQuickCheckin()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="quickCheckinForm">
+                    <div class="form-group">
+                        <label for="checkinPatientId">Patient ID</label>
+                        <div class="input-with-button">
+                            <input type="text" id="checkinPatientId" placeholder="Enter Patient ID">
+                            <button type="button" class="btn btn-outline" onclick="scanRFID()">
+                                <i class="fas fa-wifi"></i> Scan RFID
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="checkinDepartment">Department</label>
+                        <select id="checkinDepartment" required>
+                            <option value="">Select Department</option>
+                            <option value="emergency">Emergency</option>
+                            <option value="cardiology">Cardiology</option>
+                            <option value="orthopedics">

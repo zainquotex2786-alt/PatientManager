@@ -1,0 +1,50 @@
+0) Inputs you must honor
+
+Existing pages/components (keep their structure, classes, and visual style):
+
+index.html (Admin Dashboard) — uses .admin-dashboard body class, stat cards, quick actions, and top nav with “Admin” badge. Keep that layout and the Font Awesome icon usage. 
+
+index
+
+patient-portal.html — public/patient site with hero section, sections navigation, login button + “Book Appointment” CTA. Keep the look and all section anchors. 
+
+patient-portal
+
+login.html — two-step login (role selection + login form) with demo buttons; keep the animations, role cards, and success modal flow. 
+
+login
+
+appointments.html — 4-step booking wizard (Patient Info → Doctor → Time → Confirmation) with dynamic doctors grid and calendar/time slots UI; preserve wizard look. 
+
+appointments
+
+appointments-admin.html — admin appointments management shell (ensure it lists/filter/sorts appointments). 
+
+Appointments-Admin
+
+enrollment.html — multi-step patient enrollment wizard (Personal → Contact → Medical → Review). Retain progress steps and card layout. 
+
+enrollment
+
+tracking.html — patient tracking screen with stats, search/filter controls, and actions; keep the stat cards and control layout. 
+
+tracking
+
+styles.css — do not change the design language; keep tokens, variables, component classes, and card/nav patterns exactly as is. Extend only where needed. 
+
+styles
+
+script.js — contains app logic (auth, routing, animations, utilities). Use it as a reference for UI behavior, but migrate data access from localStorage to PHP endpoints. Keep the same DOM IDs and event flows so the UI feels identical. 
+
+script
+
+Product goals from the Project Outline (must be demonstrably implemented):
+
+Patient enrolment (online registration, centralised patient record)
+
+Appointment viewing/booking/management (incl. doctor list)
+
+Tracking & monitoring (statuses / check-ins)
+
+Patient support/helpdesk/AI bot (there is already a bot — keep it as is; do not add a new one)
+Keep scope within these four, and ensure each area is visible and testable.

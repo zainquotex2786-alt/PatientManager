@@ -1,0 +1,77 @@
+You are a full-stack engineer. I have front-end files (index.html, patient-portal.html, login.html, appointments.html, appointments-admin.html, enrollment.html, tracking.html, styles.css, script.js). They currently display but have no working backend (only plain text, localStorage, and placeholders).
+
+I need you to turn this into a working Patient Management System using only PHP, HTML, Java, and MySQL (SQL). Keep the existing UI, CSS, and DOM IDs. Do not change the style — only connect it to a real backend.
+
+Functional Requirements (from assessment brief + project outline):
+
+Patient Enrolment
+
+Multi-step enrollment form saves patient data into a patients table.
+
+Generate a unique patient_code.
+
+Authentication
+
+Login with users table (role = admin or patient).
+
+Keep the existing role cards and login form; use PHP sessions instead of localStorage.
+
+Appointments
+
+Patients can book appointments (appointments.html) with doctors from a seeded doctors table.
+
+Admins can view/manage all appointments (appointments-admin.html).
+
+Tracking & Monitoring
+
+tracking.html should show patient statuses (waiting, admitted, in-treatment, etc.).
+
+Provide search/filter and check-in updates.
+
+Search Page (missing)
+
+Add search.html styled like the others.
+
+It should search patients by name/code/email using DB.
+
+Database schema
+
+users (username, password_hash, role, name)
+
+patients (id, patient_code, name, dob, gender, contact, history)
+
+doctors (id, name, specialty)
+
+appointments (id, patient_id, doctor_id, date, time, status)
+
+tracking (id, patient_id, status, location, updated_at)
+
+API Endpoints (PHP, return JSON)
+
+/api/auth.php → login/logout/session
+
+/api/patients.php → enroll, list/search
+
+/api/appointments.php → book, list (admin/patient), update status
+
+/api/tracking.php → stats, search, check-in
+
+Security & Good Practice
+
+Use PDO + prepared statements.
+
+Escape outputs.
+
+Passwords hashed with password_hash().
+
+Deliverables
+
+Updated HTML pages (same design, working backend calls).
+
+PHP backend files in /api.
+
+db.php connection file.
+
+schema.sql + seed.sql for tables & demo users/doctors.
+
+README with run instructions (XAMPP/Apache, MySQL import, demo logins).

@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Pakenham Hospital PMS</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="admin-dashboard">
+    <!-- Navigation -->
+    <nav class="main-nav admin-nav">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-hospital-alt"></i>
+                <span>Pakenham Hospital</span>
+                <span class="nav-badge">Admin</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link active"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="enrollment.html" class="nav-link"><i class="fas fa-user-plus"></i> Enrollment</a></li>
+                <li><a href="appointments-admin.html" class="nav-link"><i class="fas fa-calendar-check"></i> Appointments</a></li>
+                <li><a href="tracking.html" class="nav-link"><i class="fas fa-map-marker-alt"></i> Tracking</a></li>
+                <li><a href="search.html" class="nav-link"><i class="fas fa-search"></i> Search</a></li>
+            </ul>
+            <div class="nav-actions">
+                <div class="admin-user-menu">
+                    <div class="user-info">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Admin User</span>
+                        <div class="user-dropdown">
+                            <a href="#profile"><i class="fas fa-user-cog"></i> Profile Settings</a>
+                            <a href="#system"><i class="fas fa-cog"></i> System Settings</a>
+                            <a href="login.html" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="notification-bell">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-count">3</span>
+                </div>
+            </div>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <!-- Welcome Section -->
+         <!-- Welcome Section -->
+<section class="welcome-section">
+    <div class="container">
+        <div class="welcome-content">
+            <h1>Welcome back, <span class="admin-name" id="adminName">Admin</span>! 👋</h1>
+            <p>Here's what's happening at Pakenham Hospital today</p>
+            <div class="current-time">
+                <i class="fas fa-clock"></i>
+                <span id="liveClock">Loading...</span>
+            </div>
+            <div class="login-info">
+                <small>Logged in as: <strong id="loggedInUser">Administrator</strong></small>
+            </div>
+        </div>
+    </div>
+</section>
+        
+
+        <!-- Stats Overview -->
+        <section class="stats-section">
+            <div class="container">
+                <div class="stats-grid">
+                    <div class="stat-card primary">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalPatients">1,847</h3>
+                            <p>Total Patients</p>
+                            <span class="stat-trend up">+12% this month</span>
+                        </div>
+                    </div>
+                    <div class="stat-card success">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="todayAppointments">67</h3>
+                            <p>Today's Appointments</p>
+                            <span class="stat-trend up">+5 today</span>
+                        </div>
+                    </div>
+                    <div class="stat-card warning">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-clock"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="pendingCheckins">23</h3>
+                            <p>Pending Check-ins</p>
+                            <span class="stat-trend down">-3 waiting</span>
+                        </div>
+                    </div>
+                    <div class="stat-card info">
+                        <div class="stat-icon">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="systemUptime">99.9%</h3>
+                            <p>System Uptime</p>
+                            <span class="stat-trend stable">All systems operational</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Actions -->
+        <section class="actions-section">
+            <div class="container">
+                <h2 class="section-title">Quick Actions</h2>
+                <div class="actions-grid">
+                    <div class="action-card" onclick="navigateTo('enrollment.html')">
+                        <div class="action-icon">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <h3>Enroll New Patient</h3>
+                        <p>Register a new patient in the system with complete medical profile</p>
+                        <div class="action-badge">15 today</div>
+                    </div>
+                    <div class="action-card" onclick="navigateTo('appointments-admin.html')">
+                        <div class="action-icon">
+                            <i class="fas fa-calendar-plus"></i>
+                        </div>
+                        <h3>Manage Appointments</h3>
+                        <p>Schedule, modify, or cancel patient appointments</p>
+                        <div class="action-badge">8 pending</div>
+                    </div>
+                    <div class="action-card" onclick="navigateTo('tracking.html')">
+                        <div class="action-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <h3>Patient Tracking</h3>
+                        <p>Monitor patient locations and check-in status in real-time</p>
+                        <div class="action-badge">12 active</div>
+                    </div>
+                    <div class="action-card" onclick="navigateTo('search.html')">
+                        <div class="action-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <h3>Patient Search</h3>
+                        <p>Find patient records and medical history quickly</p>
+                        <div class="action-badge">240 searches</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent Activity & System Alerts -->
+        <section class="dashboard-grid">
+            <div class="container">
+                <div class="grid-columns">
+                    <!-- Recent Activity -->
+                    <div class="grid-column">
+                        <div class="dashboard-card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-history"></i> Recent Activity</h3>
+                                <a href="#activity" class="view-all">View All</a>
+                            </div>
+                            <div class="activity-list">
+                                <div class="activity-item success">
+                                    <div class="activity-icon">
+                                        <i class="fas fa-user-plus"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <p><strong>Sarah Johnson</strong> enrolled as new patient</p>
+                                        <span>2 minutes ago • Patient ID: P1847</span>
+                                    </div>
+                                </div>
+                                <div class="activity-item info">
+                                    <div class="activity-icon">
+                                        <i class="fas fa-calendar-check"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <p><strong>Dr. Smith</strong> completed appointment with <strong>Mike Davis</strong></p>
+                                        <span>15 minutes ago • Cardiology</span>
+                                    </div>
+                                </div>
+                                <div class="activity-item warning">
+                                    <div class="activity-icon">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <p><strong>Emergency</strong> patient admitted - John Smith</p>
+                                        <span>30 minutes ago • ICU</span>
+                                    </div>
+                                </div>
+                                <div class="activity-item primary">
+                                    <div class="activity-icon">
+                                        <i class="fas fa-file-medical"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <p><strong>Lab results</strong> uploaded for Patient P1324</p>
+                                        <span>1 hour ago • Blood Test</span>
+                                    </div>
+                                </div>
+                                <div class="activity-item success">
+                                    <div class="activity-icon">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <p><strong>System backup</strong> completed successfully</p>
+                                        <span>2 hours ago • Automated Process</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- System Alerts -->
+                    <div class="grid-column">
+                        <div class="dashboard-card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-bell"></i> System Alerts</h3>
+                                <span class="alert-badge">3 New</span>
+                            </div>
+                            <div class="alerts-list">
+                                <div class="alert-item critical">
+                                    <div class="alert-icon">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                    </div>
+                                    <div class="alert-content">
+                                        <h4>Server Performance</h4>
+                                        <p>High CPU usage detected on main server</p>
+                                        <span>Requires immediate attention</span>
+                                    </div>
+                                </div>
+                                <div class="alert-item warning">
+                                    <div class="alert-icon">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <div class="alert-content">
+                                        <h4>Backup Schedule</h4>
+                                        <p>Weekly backup scheduled for tonight at 2:00 AM</p>
+                                        <span>Expected downtime: 15 minutes</span>
+                                    </div>
+                                </div>
+                                <div class="alert-item info">
+                                    <div class="alert-icon">
+                                        <i class="fas fa-info-circle"></i>
+                                    </div>
+                                    <div class="alert-content">
+                                        <h4>System Update</h4>
+                                        <p>New update available for patient management module</p>
+                                        <span>Version 2.1.3 ready for install</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Today's Schedule -->
+                        <div class="dashboard-card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-calendar-day"></i> Today's Schedule</h3>
+                                <span class="schedule-date" id="todayDate">Loading...</span>
+                            </div>
+                            <div class="schedule-list">
+                                <div class="schedule-item">
+                                    <div class="schedule-time">09:00 AM</div>
+                                    <div class="schedule-details">
+                                        <strong>Dr. Emily Carter</strong>
+                                        <span>Cardiology - 5 appointments</span>
+                                    </div>
+                                </div>
+                                <div class="schedule-item">
+                                    <div class="schedule-time">10:30 AM</div>
+                                    <div class="schedule-details">
+                                        <strong>Staff Meeting</strong>
+                                        <span>Monthly review - Conference Room</span>
+                                    </div>
+                                </div>
+                                <div class="schedule-item">
+                                    <div class="schedule-time">02:00 PM</div>
+                                    <div class="schedule-details">
+                                        <strong>Dr. Michael Jones</strong>
+                                        <span>Surgery - 3 procedures scheduled</span>
+                                    </div>
+                                </div>
+                                <div class="schedule-item">
+                                    <div class="schedule-time">04:00 PM</div>
+                                    <div class="schedule-details">
+                                        <strong>System Maintenance</strong>
+                                        <span>Database optimization</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Emergency Quick Access -->
+        <section class="emergency-section">
+            <div class="container">
+                <div class="emergency-card">
+                    <div class="emergency-content">
+                        <div class="emergency-icon">
+                            <i class="fas fa-ambulance"></i>
+                        </div>
+                        <div class="emergency-info">
+                            <h3>Emergency Quick Access</h3>
+                            <p>Immediate actions for critical situations</p>
+                        </div>
+                    </div>
+                    <div class="emergency-actions">
+                        <button class="btn btn-critical" onclick="triggerEmergency('lockdown')">
+                            <i class="fas fa-lock"></i> Emergency Lockdown
+                        </button>
+                        <button class="btn btn-warning" onclick="triggerEmergency('evacuation')">
+                            <i class="fas fa-person-walking"></i> Evacuation Protocol
+                        </button>
+                        <button class="btn btn-info" onclick="triggerEmergency('contacts')">
+                            <i class="fas fa-phone"></i> Emergency Contacts
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="admin-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <div class="footer-logo">
+                        <i class="fas fa-hospital-alt"></i>
+                        <span>Pakenham Hospital PMS</span>
+                    </div>
+                    <p>Advanced Patient Management System v2.1.2</p>
+                    <div class="system-status">
+                        <span class="status-dot online"></span>
+                        System Status: <strong>Operational</strong>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <a href="#support"><i class="fas fa-life-ring"></i> Support</a>
+                    <a href="#docs"><i class="fas fa-book"></i> Documentation</a>
+                    <a href="#updates"><i class="fas fa-sync"></i> Check for Updates</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Pakenham Hospital. All rights reserved. | Last login: <span id="lastLoginTime">Today, 08:45 AM</span></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    <script>
+        // Admin Dashboard Specific JavaScript
+        function updateLiveClock() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            document.getElementById('liveClock').textContent = now.toLocaleDateString('en-AU', options);
+        }
+
+        function updateTodayDate() {
+            const today = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('todayDate').textContent = today.toLocaleDateString('en-AU', options);
+        }
+
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+
+        function triggerEmergency(type) {
+            const messages = {
+                lockdown: 'Emergency lockdown protocol activated. All systems secured.',
+                evacuation: 'Evacuation protocol initiated. Follow emergency procedures.',
+                contacts: 'Displaying emergency contact list...'
+            };
+            alert(`🚨 ${messages[type]}`);
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                sessionStorage.clear();
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Initialize admin dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            updateLiveClock();
+            updateTodayDate();
+            setInterval(updateLiveClock, 1000);
+
+            // Check if user is admin
+            if (!sessionStorage.getItem('isAdmin')) {
+                window.location.href = 'login.html';
+            }
+
+            // Add animation to stats cards
+            const stats = ['totalPatients', 'todayAppointments', 'pendingCheckins', 'systemUptime'];
+            stats.forEach((stat, index) => {
+                setTimeout(() => {
+                    const element = document.getElementById(stat);
+                    if (element) {
+                        element.style.transform = 'scale(1.1)';
+                        setTimeout(() => element.style.transform = 'scale(1)', 300);
+                    }
+                }, index * 200);
+            });
+        });
+
+        // Mobile menu toggle
+        document.getElementById('hamburger')?.addEventListener('click', function() {
+            this.classList.toggle('active');
+            document.querySelector('.nav-menu').classList.toggle('active');
+        });
+    </script>
+</body>
+</html>
