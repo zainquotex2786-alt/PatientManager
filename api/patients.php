@@ -102,6 +102,13 @@ function handleEnroll($db) {
 }
 
 function handleList($db) {
+    // Only admin can list all patients
+    if ($_SESSION['role'] !== 'admin') {
+        http_response_code(403);
+        echo json_encode(['error' => 'Admin access required']);
+        return;
+    }
+    
     try {
         $query = "SELECT id, patient_code, name, dob, gender, contact, email, created_at FROM patients ORDER BY created_at DESC";
         $stmt = $db->prepare($query);
@@ -116,6 +123,13 @@ function handleList($db) {
 }
 
 function handleSearch($db) {
+    // Only admin can search all patients
+    if ($_SESSION['role'] !== 'admin') {
+        http_response_code(403);
+        echo json_encode(['error' => 'Admin access required']);
+        return;
+    }
+    
     $search_term = $_GET['q'] ?? '';
     
     if (empty($search_term)) {
@@ -144,6 +158,13 @@ function handleSearch($db) {
 }
 
 function handleGet($db) {
+    // Only admin can get full patient details
+    if ($_SESSION['role'] !== 'admin') {
+        http_response_code(403);
+        echo json_encode(['error' => 'Admin access required']);
+        return;
+    }
+    
     $patient_id = $_GET['id'] ?? '';
     
     if (empty($patient_id)) {
