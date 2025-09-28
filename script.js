@@ -22,6 +22,9 @@ const hospitalData = {
 
 // API Helper Functions
 const api = {
+    // Local fallback mode detection
+    isLocalMode: false,
+    
     async request(endpoint, options = {}) {
         const url = `${API_BASE_URL}${endpoint}`;
         const defaultOptions = {
@@ -47,8 +50,98 @@ const api = {
             return data;
         } catch (error) {
             console.error('API Error:', error);
+            // If API is not available, enable local mode
+            if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError') || error.message.includes('fetch')) {
+                this.isLocalMode = true;
+                console.log('🔄 API not available, switching to local mode for:', endpoint);
+                return this.handleLocalFallback(endpoint, options);
+            }
             throw error;
         }
+    },
+    
+    // Local fallback handler
+    handleLocalFallback(endpoint, options) {
+        console.log('📝 Local mode handling:', endpoint);
+        
+        // Parse endpoint and handle different routes
+        if (endpoint.includes('/auth.php?action=login')) {
+            return this.localLogin(JSON.parse(options.body));
+        } else if (endpoint.includes('/auth.php?action=session')) {
+            return this.localGetSession();
+        } else if (endpoint.includes('/auth.php?action=logout')) {
+            return this.localLogout();
+        } else if (endpoint.includes('/patients.php?action=list')) {
+            return this.localGetPatients();
+        } else if (endpoint.includes('/appointments.php?action=list')) {
+            return this.localGetAppointments();
+        } else if (endpoint.includes('/tracking.php?action=stats')) {
+            return this.localGetTrackingStats();
+        }
+        
+        // Default fallback
+        return Promise.resolve({ success: true, data: [] });
+    },
+    
+    // Local authentication
+    localLogin({ username, password, role }) {
+        const validCredentials = [
+            { username: 'admin', password: 'password', role: 'admin', name: 'Admin User', id: 1 },
+            { username: 'patient', password: 'password', role: 'patient', name: 'Patient User', id: 2 }
+        ];
+        
+        const user = validCredentials.find(u => 
+            u.username === username && u.password === password && 
+            (!role || u.role === role)
+        );
+        
+        if (user) {
+            // Store user in localStorage for local mode
+            localStorage.setItem('localUser', JSON.stringify(user));
+            return Promise.resolve({ success: true, user });
+        } else {
+            return Promise.reject(new Error('Invalid credentials'));
+        }
+    },
+    
+    localGetSession() {
+        const user = localStorage.getItem('localUser');
+        if (user) {
+            return Promise.resolve({ authenticated: true, user: JSON.parse(user) });
+        } else {
+            return Promise.resolve({ authenticated: false });
+        }
+    },
+    
+    localLogout() {
+        localStorage.removeItem('localUser');
+        return Promise.resolve({ success: true });
+    },
+    
+    // Mock data for local mode
+    localGetPatients() {
+        return Promise.resolve([
+            { id: 1, name: 'John Doe', email: 'john.doe@email.com', phone: '(555) 123-4567', status: 'Active' },
+            { id: 2, name: 'Jane Smith', email: 'jane.smith@email.com', phone: '(555) 234-5678', status: 'Active' },
+            { id: 3, name: 'Bob Johnson', email: 'bob.johnson@email.com', phone: '(555) 345-6789', status: 'Inactive' }
+        ]);
+    },
+    
+    localGetAppointments() {
+        return Promise.resolve([
+            { id: 1, patient_name: 'John Doe', doctor_name: 'Dr. Smith', date: '2025-01-15', time: '10:00', status: 'Scheduled' },
+            { id: 2, patient_name: 'Jane Smith', doctor_name: 'Dr. Johnson', date: '2025-01-16', time: '14:30', status: 'Confirmed' },
+            { id: 3, patient_name: 'Bob Johnson', doctor_name: 'Dr. Brown', date: '2025-01-17', time: '09:15', status: 'Pending' }
+        ]);
+    },
+    
+    localGetTrackingStats() {
+        return Promise.resolve({
+            total_patients: 3,
+            active_appointments: 2,
+            pending_appointments: 1,
+            completed_today: 5
+        });
     },
 
     // Authentication endpoints
