@@ -365,6 +365,19 @@ const auth = {
             window.location.href = 'login.html';
         }
     },
+    
+    // Clear all authentication data (for troubleshooting redirect loops)
+    clearAllAuth() {
+        console.log('🧹 Clearing all authentication data...');
+        this.currentUser = null;
+        localStorage.removeItem('localUser');
+        localStorage.clear();
+        sessionStorage.clear();
+        api.isLocalMode = false;
+        console.log('✅ All authentication data cleared');
+        // Reload the page to start fresh
+        window.location.reload();
+    },
 
     requireAuth(role = null) {
         if (!this.currentUser) {
@@ -679,6 +692,14 @@ function logout() {
 // Enhanced Initialization
 document.addEventListener('DOMContentLoaded', async function() {
     try {
+        // Check if user wants to force logout (clear session)
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('logout') || urlParams.has('clear')) {
+            console.log('🔄 Force logout/clear requested');
+            auth.clearAllAuth();
+            return;
+        }
+        
         // Initialize auth first
         await auth.init();
         
@@ -688,15 +709,32 @@ document.addEventListener('DOMContentLoaded', async function() {
         // Check if user should be redirected from login page
         const currentPage = window.location.pathname.split('/').pop() || 'index.html';
         
+        // Only redirect if we have a valid user and we're actually authenticated
         if (auth.currentUser && currentPage === 'login.html') {
             console.log('User already logged in, redirecting...');
             
-            if (auth.currentUser.role === 'admin') {
-                window.location.href = 'index.html';
-            } else {
-                window.location.href = 'patient-portal.html';
+            // Double-check authentication is valid by testing a session call
+            try {
+                const sessionCheck = await api.getSession();
+                if (sessionCheck.authenticated) {
+                    if (auth.currentUser.role === 'admin') {
+                        window.location.href = 'index.html';
+                    } else {
+                        window.location.href = 'patient-portal.html';
+                    }
+                    return;
+                } else {
+                    // Session is invalid, clear auth and stay on login
+                    console.log('⚠️ Invalid session detected, clearing auth');
+                    auth.clearAllAuth();
+                    return;
+                }
+            } catch (error) {
+                console.log('⚠️ Session check failed, clearing auth:', error.message);
+                auth.currentUser = null;
+                api.isLocalMode = true;
+                // Stay on login page for local mode
             }
-            return;
         }
         
         // Page-specific initializations
